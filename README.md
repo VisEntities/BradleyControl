@@ -3,6 +3,8 @@ Sick of the same old Bradley routine? Inject this armored beast with some steroi
 
 No more weaknesses to be exploited or predictable patterns to memorize. It's time to watch Bradley take revenge on all those who thought they had it all figured out.
 
+![](https://i.imgur.com/tgpdOmB.png)
+
 --------
 
 ## Configuration

@@ -1,5 +1,7 @@
-# Bradley on steroids! From bland to badass
+# From Bland to Badass
+Sick of the same old Bradley routine? Inject this armored beast with some steroids and level it up with the intelligence and strength it deserves!
 
+No more weaknesses to be exploited or predictable patterns to memorize. It's time to watch Bradley take revenge on all those who thought they had it all figured out.
 
 --------
 
@@ -51,57 +53,63 @@
 ```
 
 ### Set Crates On Fire
-Determines whether or not to create fire balls for each crate that spawns after Bradley's destruction
+Determines whether or not fireballs will be created for each crate that spawns after Bradley's destruction. If enabled, every crate will be set on fire, making it harder for players to collect the loot without taking damage.
+
 
 ### Spread Chance
-Determines the probability of a fireball spreading and creating new fireballs.
-The higher value, the fireball is less likely to spread further, while lower value increases the chance of fireball spreading
-Keep in mind that too many fireballs may negatively impact you server's performance,, so it's important to have the performance in mind and considered.
+Determines the probability of a fireball spreading and creating new ones.
+A higher value will increase the chance of the fireball spreading further, while a lower value will make the fireball less likely to spread.
+
+Be mindful of the impact on server performance when making adjustments to this configuration.
 
 ### Spread At Lifetime Percent
-Determines at what time of the fireball lifetime to being spreading sub fireballs further.
+Determines at what point in the fireball's lifetime it'll begin to spread additional fireballs.
 
 ------
 
 ### Maximum Speed
-Determines the maximum torque applied to the wheels for forward and backward movement, which affects the maximum speed Bradley can reach.
+Determines the maximum torque applied to Bradley's wheels, affecting how fast it can move forward and backward.
 
 ### Spin Speed
-Determines how fast or slow Bradley turns or spins.
-The higher value, the faster spinning, making Bradley more agile and responsive. While lower value makes it less agile and harder to maneuver.
+Determines how quickly Bradley can turn or spin.
+A higher value will result in faster spinning, making Bradley more agile and responsive. A lower value, however, will make it harder for Bradley to maneuver, making it an easier target for enemy fire.
 
 ### Brake Force
-Determines the strength of the vehicle's brakes, affecting Bradley's deceleration rate and stopping distance.
-Higher values will result in a more contained fire, while lower values will lead to a fire that spreads more aggressively.
+Determines the strength of Bradley's brakes, which impacts its deceleration rate and stopping distance. 
+Higher values allow for faster deceleration and shorter stopping distances, helping Bradley stay on its path more accurately. However, this may also lead to slower movement. On the other hand, lower values result in slower deceleration, which could make Bradley slip off its path more often.
 
 ------------
 
 ### Engagement Range
-Determines the maximum distance within which the player can be interacted or engaged with by Bradley. Players beyond this range of visibility are considered invalid for engagement and unreachable by Bradley's weapons.
+Determines the range of visibility at which Bradley can interact with players and engage them with its weapons.
+
 
 ### Target Search Range
-Determines the radius around Bradley within which it can see and look for potential targets.
-Higher value allows Bradley to track targets at a greater distance while lower value limits the detection and tracking range.
+Determines the radius around Bradley within which it can see and track potential targets.
+A higher value allows Bradley to track targets at a greater distance, while a lower value limits the detection and tracking range.
 
 ### Memory Duration
-Determines how long Bradley remembers a target after it has last seen him. Basically makes Bradley lose track of targets that it hasn't seen or engaged with for a certain period.
-Higher values makes Bradley remember target for a longer duration, even if they go out of sight, lower value makes it forget them ore quickly once they go out of sight
+Determines how long Bradley remembers a target after it has last seen them.
+A higher value makes Bradley remembers targets for a longer duration, even if they go out of sight. This is especially useful when engaging targets that use cover or attempt to hide from Bradley's line of sight. Contrariwise, a lower value causes Bradley to forget targets more quickly once they go out of sight, limiting its ability to engage them.
 
 ----------
 
 ### Time Between Bursts
-Represents the time between each shot of the coaxial gun.
-Higher value makes shoot less frequently, while lower value makes it short more frequently.
+Determines the time between each shot fired by the coaxial gun.
+A higher value will result in longer periods of time between shots, while a lower value will result in more rapid and aggressive firing.
+
 
 ### Maximum Shots Per Burst
-Represents the maximum number of shots fired in a single burst by the coaxial gun.
-Higher value allows  more shots to be fired in a single burst, while lower fiew shots.
+Determines the maximum number of shots that can be fired in a single burst by the coaxial gun.
+A higher value allows for more shots to be fired in quick succession. On the contrary, a lower value means that fewer shots can be fired in a single burst. 
 
 ### Bullet Damage
-Represents the base amount of damage dealt by the bullets fired by the coaxial gun.
+Determines the base amount of damage that is dealt by each bullet fired from the coaxial gun.
 
 -------
 
 ### Recoil Intensity
-Determines the amount of force applied to Bradley's body as a result of firing the main gun (Cannon). This force simulates the recoil effect of the gun.
-Higher value mkaes Bradley experience more significant movement and rotation when firing its main gun, while lower value reduces the reocil force.
+Determines the amount of force applied to Bradley's body as a result of firing its cannon gun, simulating the recoil effect of the gun.
+A higher value means that Bradley will experience more significant movement and rotation when firing, while a lower value reduces the amount of recoil force.
+
+Note that too much recoil can impact Bradley's accuracy and stability, while too little can make it less effective in combat situations.

@@ -52,6 +52,7 @@ No more weaknesses to be exploited or predictable patterns to memorize. It's tim
 }
 ```
 
+## Flames
 ### Set Crates On Fire
 Determines whether or not fireballs will be created for each crate that spawns after Bradley's destruction. If enabled, every crate will be set on fire, making it harder for players to collect the loot without taking damage.
 
@@ -67,6 +68,7 @@ Determines at what point in the fireball's lifetime it'll begin to spread additi
 
 ------
 
+## Movement
 ### Maximum Speed
 Determines the maximum torque applied to Bradley's wheels, affecting how fast it can move forward and backward.
 
@@ -80,9 +82,9 @@ Higher values allow for faster deceleration and shorter stopping distances, help
 
 ------------
 
+## Targeting
 ### Engagement Range
 Determines the range of visibility at which Bradley can interact with players and engage them with its weapons.
-
 
 ### Target Search Range
 Determines the radius around Bradley within which it can see and track potential targets.
@@ -94,6 +96,7 @@ A higher value makes Bradley remembers targets for a longer duration, even if th
 
 ----------
 
+## Coax Turret
 ### Time Between Bursts
 Determines the time between each shot fired by the coaxial gun.
 A higher value will result in longer periods of time between shots, while a lower value will result in more rapid and aggressive firing.
@@ -108,6 +111,7 @@ Determines the base amount of damage that is dealt by each bullet fired from the
 
 -------
 
+## Cannon
 ### Recoil Intensity
 Determines the amount of force applied to Bradley's body as a result of firing its cannon gun, simulating the recoil effect of the gun.
 A higher value means that Bradley will experience more significant movement and rotation when firing, while a lower value reduces the amount of recoil force.

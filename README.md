@@ -113,7 +113,7 @@ Creating plugins is my passion, and I love nothing more than exploring new ideas
 
 With your support on [Patreon](https://www.patreon.com/VisEntities), you're  giving me the freedom to devote more time and energy into what I love, which in turn allows me to continue providing new and exciting content to the community.
 
-![](https://i.imgur.com/cDLkUPZ.png)
+![](https://i.imgur.com/sEIidht.png)
 
 A portion of the contributions will also be donated to the uMod team as a token of appreciation for their dedication to coding quality, inspirational ideas, and time spent for the community.
 

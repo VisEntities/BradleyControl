@@ -1,21 +1,9 @@
-﻿using ConVar;
-using Facepunch;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Oxide.Core;
-using Oxide.Core.Plugins;
-using Oxide.Game.Rust.Libraries;
-using System;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 using UnityEngine;
-using Physics = UnityEngine.Physics;
+using Pool = Facepunch.Pool;
 using Random = UnityEngine.Random;
 using Time = UnityEngine.Time;
-using Pool = Facepunch.Pool;
 
 namespace Oxide.Plugins
 {
@@ -48,9 +36,6 @@ namespace Oxide.Plugins
             [JsonProperty("Version")]
             public string Version { get; set; }
 
-            [JsonProperty("Automated Spawn")]
-            public AutomatedSpawnOptions AutomatedSpawn { get; set; }
-
             [JsonProperty("Health")]
             public HealthOptions Health { get; set; }
 
@@ -62,11 +47,18 @@ namespace Oxide.Plugins
 
             [JsonProperty("Debris")]
             public DebrisOptions Debris { get; set; }
-        }
 
-        private class AutomatedSpawnOptions
-        {
+            [JsonProperty("Movement")]
+            public MovementOptions Movement { get; set; }
 
+            [JsonProperty("Targeting")]
+            public TargetingOptions Targeting { get; set; }
+
+            [JsonProperty("Coax Turret")]
+            public CoaxTurretOptions CoaxTurret { get; set; }
+
+            [JsonProperty("Cannon")]
+            public CannonOptions Cannon { get; set; }
         }
 
         private class HealthOptions
@@ -80,29 +72,26 @@ namespace Oxide.Plugins
 
         private class LootOptions
         {
-            [JsonProperty("Maximum Crates To Spawn")]
-            public int MaximumCratesToSpawn { get; set; }
+            [JsonProperty("Maximum Crates To Drop")]
+            public int MaximumCratesToDrop { get; set; }
         }
         
         private class DebrisOptions
         {
-            [JsonProperty("Drop Debris")]
-            public bool DropDebris { get; set; }
+            [JsonProperty("Drop On Destruction")]
+            public bool DropOnDestruction { get; set; }
 
-            [JsonProperty("Health")]
-            public float Health { get; set; }
+            [JsonProperty("Harvestable Hit Points")]
+            public float HarvestableHitPoints { get; set; }
 
-            [JsonProperty("Too Hot Until")]
-            public float TooHotUntil { get; set; }
+            [JsonProperty("Harvest Cooldown")]
+            public float HarvestCooldown { get; set; }
         }
 
         private class FlameOptions
         {
-            [JsonProperty("Spawn On Crates")]
-            public bool SpawnOnCrates { get; set; }
-
-            [JsonProperty("Spawn On Debris")]
-            public bool SpawnOnDebris { get; set; }
+            [JsonProperty("Set Crates On Fire")]
+            public bool SetCratesOnFire { get; set; }
 
             [JsonProperty("Minimum Life Time")]
             public float MinimumLifeTime { get; set; }
@@ -113,17 +102,59 @@ namespace Oxide.Plugins
             [JsonProperty("Spread Chance")]
             public int SpreadChance { get; set; }
 
-            [JsonProperty("Spread Delay Ratio")]
-            public int SpreadDelayRatio { get; set; }
+            [JsonProperty("Spread At Lifetime Percent")]
+            public int SpreadAtLifetimePercent { get; set; }
 
-            [JsonProperty("Water To Extinguish")]
-            public int WaterToExtinguish { get; set; }
-
-            [JsonProperty("Damage Frequency Per Second")]
-            public float DamageFrequency { get; set; }
-
-            [JsonProperty("Damage Amount")]
+            [JsonProperty("Damage Per Second")]
             public float DamagePerSecond { get; set; }
+
+            [JsonProperty("Damage Rate")]
+            public float DamageRate { get; set; }
+
+            [JsonProperty("Water Required To Extinguish")]
+            public int WaterRequiredToExtinguish { get; set; }
+        }
+
+        private class MovementOptions
+        {
+            [JsonProperty("Maximum Speed")]
+            public float MaximumSpeed { get; set; }
+
+            [JsonProperty("Spin Speed")]
+            public float SpinSpeed { get; set; }
+
+            [JsonProperty("Brake Force")]
+            public float BrakeForce { get; set; }
+        }
+
+        private class TargetingOptions
+        {
+            [JsonProperty("Engagement Range")]
+            public float EngagementRange { get; set; }
+
+            [JsonProperty("Target Search Range")]
+            public float TargetSearchRange { get; set; }
+
+            [JsonProperty("Memory Duration")]
+            public float MemoryDuration { get; set; }
+        }
+
+        private class CoaxTurretOptions
+        {
+            [JsonProperty("Time Between Bursts")]
+            public float TimeBetweenBursts { get; set; }
+
+            [JsonProperty("Maximum Shots Per Burst")]
+            public int MaximumShotsPerBurst { get; set; }
+
+            [JsonProperty("Bullet Damage")]
+            public float BulletDamage { get; set; }
+        }
+
+        private class CannonOptions
+        {
+            [JsonProperty("Recoil Intensity")]
+            public float RecoilIntensity { get; set; }
         }
 
         protected override void LoadConfig()
@@ -172,19 +203,46 @@ namespace Oxide.Plugins
                 },
                 Loot = new LootOptions
                 {
-                    MaximumCratesToSpawn = 3
+                    MaximumCratesToDrop = 3
+                },
+                Debris = new DebrisOptions
+                {
+                    DropOnDestruction = true,
+                    HarvestableHitPoints = 500f,
+                    HarvestCooldown = 480f
                 },
                 Flame = new FlameOptions
                 {
-                    SpawnOnCrates = true,
-                    SpawnOnDebris = false,
-                    MinimumLifeTime = 30f,
-                    MaximumLifeTime = 30f,
+                    SetCratesOnFire = true,
+                    MinimumLifeTime = 20f,
+                    MaximumLifeTime = 40f,
                     SpreadChance = 50,
-                    SpreadDelayRatio = 50,
-                    WaterToExtinguish = 100,
-                    DamageFrequency = 0.5f,
-                    DamagePerSecond = 1f,
+                    SpreadAtLifetimePercent = 50,
+                    DamagePerSecond = 2f,
+                    DamageRate = 0.5f,
+                    WaterRequiredToExtinguish = 200,
+                },
+                Movement = new MovementOptions
+                {
+                    MaximumSpeed = 2000f,
+                    BrakeForce = 100f,
+                    SpinSpeed = 2000f,
+                },
+                Targeting = new TargetingOptions
+                {
+                    EngagementRange = 100f,
+                    TargetSearchRange = 100f,
+                    MemoryDuration = 20f,
+                },
+                CoaxTurret = new CoaxTurretOptions
+                {
+                    TimeBetweenBursts = 0.06667f,
+                    MaximumShotsPerBurst = 10,
+                    BulletDamage = 15f,
+                },
+                Cannon = new CannonOptions
+                {
+                    RecoilIntensity = 200f,
                 }
             };
         }
@@ -207,38 +265,34 @@ namespace Oxide.Plugins
                     continue;
 
                 InitializeBradley(bradley);
+                _spawnedBradleys.Add(bradley);
             }
         }
 
         private void Unload()
         {
-            _lastBradleyPosition = Vector3.zero;
+            _spawnedBradleys.Clear();
             _instance = null;
             _config = null;
         }
 
-        private void OnEntitySpawned(BradleyAPC bradley)
+        private void OnBradleyApcInitialize(BradleyAPC bradley)
         {
-            if (bradley == null)
-                return;
-
             InitializeBradley(bradley);
+            _spawnedBradleys.Add(bradley);
         }
-
+        
         private void OnEntityDeath(BradleyAPC bradley, HitInfo info)
         {
-            Vector3 bradleyPosition = bradley.transform.position;
+            _lastBradleyPosition = bradley.transform.position;
 
             NextTick(() =>
             {
-                CaptureEntitiesNearbyBradley(bradleyPosition);
-                foreach (LockedByEntCrate bradleyCrate in _crates)
-                {
-                    if (bradleyCrate != null)
-                    {
-                        SpawnFireBall(bradleyCrate);
-                    }
-                }
+                CaptureNearbyEntities(_lastBradleyPosition);
+                InitializeDebris();
+                InitializeCrates();
+
+                _spawnedBradleys.Remove(bradley);
             });
         }
 
@@ -246,61 +300,10 @@ namespace Oxide.Plugins
 
         #region Functions
 
-        private void SpawnFireBallCircle(Vector3 center, float radius, int fireballCount)
-        {
-            for (int i = 0; i < fireballCount; i++)
-            {
-                float angle = i * 360f / fireballCount;
-                Vector3 spawnPosition = center + new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad), 0, Mathf.Sin(angle * Mathf.Deg2Rad)) * radius;
-                //SpawnFireBall();
-            }
-        }
-
-
-        private void OnFireBallSpread(FireBall ball, BaseEntity fire)
-        {
-            PrintToChat("OnFireBallSpread works!");
-        }
-
-        private void SpawnFireBall(LockedByEntCrate crate)
-        {
-            FireBall fireBall = GameManager.server.CreateEntity(_fireBallPrefab, crate.transform.position) as FireBall;
-            if (!fireBall)
-                return;
-
-            fireBall.SetParent(crate, true, true);
-            fireBall.Spawn();
-            fireBall.GetComponent<Rigidbody>().isKinematic = true;
-            fireBall.GetComponent<Collider>().enabled = false;
-
-            fireBall.waterToExtinguish = _config.Flame.WaterToExtinguish;
-            fireBall.tickRate = _config.Flame.DamageFrequency;
-            fireBall.damagePerSecond = _config.Flame.DamagePerSecond;
-            fireBall.lifeTimeMax = _config.Flame.MaximumLifeTime;
-            fireBall.lifeTimeMin = _config.Flame.MinimumLifeTime;
-            fireBall.generation = (_config.Flame.SpreadChance == 0) ? 9f : (1f - (_config.Flame.SpreadChance / 100f)) / 0.1f;
-            fireBall.Think();
-            
-            float lifeTime = Random.Range(fireBall.lifeTimeMax, fireBall.lifeTimeMin);
-            float spreadDelay = lifeTime * (_config.Flame.SpreadDelayRatio / 100f);
-
-            timer.Once(spreadDelay, () =>
-            {
-                if (fireBall != null)
-                    fireBall.TryToSpread();
-            });
-
-            timer.Once(lifeTime, () =>
-            {
-                if (fireBall != null)
-                    fireBall.Extinguish();
-            });
-        }
-
-        private void CaptureEntitiesNearbyBradley(Vector3 bradleyPosition)
+        private void CaptureNearbyEntities(Vector3 position)
         {
             List<BaseEntity> nearbyEntities = Pool.GetList<BaseEntity>();
-            Vis.Entities(bradleyPosition, 30f, nearbyEntities, LayerMask.GetMask("Ragdoll", "Default"), QueryTriggerInteraction.Ignore);
+            Vis.Entities(position, 15f, nearbyEntities, LayerMask.GetMask("Ragdoll", "Default"), QueryTriggerInteraction.Ignore);
 
             if (nearbyEntities.Count != 0)
             {
@@ -318,10 +321,7 @@ namespace Oxide.Plugins
 
                     HelicopterDebris debris = capturedEntity as HelicopterDebris;
                     if (debris != null && debris.PrefabName == _bradleyDebrisPrefab)
-                    {
                         _debris.Add(debris);
-                        debris.Kill();
-                    }
                 }
             }
 
@@ -330,11 +330,94 @@ namespace Oxide.Plugins
 
         private void InitializeBradley(BradleyAPC bradley)
         {
-            bradley.InitializeHealth(_config.Health.StartingHealth, _config.Health.MaximumHealth);
-            bradley.maxCratesToSpawn = _config.Loot.MaximumCratesToSpawn;
+            bradley.InitializeHealth(_config.Health.StartingHealth, _config.Health.MaximumHealth);          
+            bradley.maxCratesToSpawn = _config.Loot.MaximumCratesToDrop;
+            
+            bradley.moveForceMax = _config.Movement.MaximumSpeed;
+            bradley.brakeForce = _config.Movement.BrakeForce;
+            bradley.turnForce = _config.Movement.SpinSpeed;
 
-            _spawnedBradleys.Add(bradley);
+            bradley.viewDistance = _config.Targeting.EngagementRange;
+            bradley.searchRange = _config.Targeting.TargetSearchRange;
+            bradley.memoryDuration = _config.Targeting.MemoryDuration;
+
+            bradley.coaxFireRate = _config.CoaxTurret.TimeBetweenBursts;
+            bradley.coaxBurstLength = _config.CoaxTurret.MaximumShotsPerBurst;
+            bradley.bulletDamage = _config.CoaxTurret.BulletDamage;
+
+            bradley.recoilScale = _config.Cannon.RecoilIntensity;
         }
+
+        private void InitializeDebris()
+        {
+            if (!_config.Debris.DropOnDestruction)
+            {
+                foreach (HelicopterDebris debris in _debris)
+                    if (debris != null)
+                        debris.Kill();
+            }
+            else
+            {
+                foreach (HelicopterDebris debris in _debris)
+                {
+                    if (debris != null)
+                    {
+                        debris.tooHotUntil = Time.realtimeSinceStartup + _config.Debris.HarvestCooldown;
+                        debris.health = _config.Debris.HarvestableHitPoints;
+                    }
+                }
+            }
+        }
+
+        private void InitializeCrates()
+        {
+            if (_config.Flame.SetCratesOnFire)
+            {
+                foreach (LockedByEntCrate crate in _crates)
+                {
+                    if (crate != null)
+                    {
+                        FireBall fireBall = SpawnFireBall(crate);
+                        InitializeFireBall(fireBall, crate);
+                        _fireBalls.Add(fireBall);
+                    }
+                }
+            }
+        }
+
+        private void InitializeFireBall(FireBall fireBall, LockedByEntCrate crate)
+        {
+            fireBall.SetParent(crate, true, true);
+            fireBall.Spawn();
+            fireBall.GetComponent<Rigidbody>().isKinematic = true;
+            fireBall.GetComponent<Collider>().enabled = false;
+
+            fireBall.tickRate = _config.Flame.DamageRate;
+            fireBall.lifeTimeMin = _config.Flame.MinimumLifeTime;
+            fireBall.lifeTimeMax = _config.Flame.MaximumLifeTime;
+            fireBall.damagePerSecond = _config.Flame.DamagePerSecond;
+            fireBall.waterToExtinguish = _config.Flame.WaterRequiredToExtinguish;
+            fireBall.generation = (_config.Flame.SpreadChance == 0) ? 9f : (1f - (_config.Flame.SpreadChance / 100f)) / 0.1f;
+
+            fireBall.Think();
+            crate.SendMessage("SetLockingEnt", fireBall.gameObject, SendMessageOptions.DontRequireReceiver);
+
+            float lifeTime = Random.Range(fireBall.lifeTimeMax, fireBall.lifeTimeMin);
+            fireBall.Invoke(() => fireBall.Extinguish(), lifeTime);
+
+            float spreadDelay = lifeTime * (_config.Flame.SpreadAtLifetimePercent / 100f);
+            fireBall.Invoke(() => fireBall.TryToSpread(), spreadDelay);
+        }
+
+        private FireBall SpawnFireBall(LockedByEntCrate crate)
+        {
+            FireBall fireBall = GameManager.server.CreateEntity(_fireBallPrefab, crate.transform.position) as FireBall;
+            if (!fireBall)
+                return null;
+
+            return fireBall;
+        }
+
 
         #endregion Functions
 
@@ -353,95 +436,5 @@ namespace Oxide.Plugins
         }
 
         #endregion Helper Functions
-
-        #region Helper Classes
-
-        private static class Draw
-        {
-            public static void Cube(BasePlayer player, float duration, Color color, Vector3 originPosition, float radius)
-            {
-                player.SendConsoleCommand("ddraw.box", duration, color, originPosition, radius);
-            }
-
-            public static void Sphere(BasePlayer player, float duration, Color color, Vector3 originPosition, float radius)
-            {
-                player.SendConsoleCommand("ddraw.sphere", duration, color, originPosition, radius);
-            }
-
-            public static void Line(BasePlayer player, float duration, Color color, Vector3 originPosition, Vector3 targetPosition)
-            {
-                player.SendConsoleCommand("ddraw.line", duration, color, originPosition, targetPosition);
-            }
-
-            public static void Arrow(BasePlayer player, float duration, Color color, Vector3 originPosition, Vector3 targetPosition, float headSize)
-            {
-                player.SendConsoleCommand("ddraw.arrow", duration, color, originPosition, targetPosition, headSize);
-            }
-
-            public static void Text(BasePlayer player, float duration, Color color, Vector3 originPosition, string text)
-            {
-                player.SendConsoleCommand("ddraw.text", duration, color, originPosition, text);
-            }
-        }
-
-        #endregion Helper Classes
-
-        #region Commands
-
-        [ConsoleCommand("bradley.info")]
-        private void cmdInfo(ConsoleSystem.Arg conArgs)
-        {
-            BasePlayer player = conArgs?.Player();
-            if (!player.IsValid())
-                return;
-
-            if (_fireBalls.Count != 0)
-            {
-                PrintToChat("There're fire balls");
-                foreach (FireBall fireBall in _fireBalls)
-                {
-                    if (fireBall != null)
-                        Draw.Sphere(player, 20f, Color.red, fireBall.transform.position, 1f);
-                }
-            }
-            PrintToChat("No fire balls");
-
-            if (_fireBalls.Count != 0)
-            {
-                PrintToChat("There'r crates");
-                foreach (LockedByEntCrate crate in _crates)
-                    Draw.Cube(player, 20f, Color.green, crate.transform.position, 1f);
-            }
-            PrintToChat("No crates");
-
-            if (_fireBalls.Count != 0)
-            {
-                PrintToChat("There'r _debris");
-                foreach (var crate in _debris)
-                    Draw.Cube(player, 20f, Color.yellow, crate.transform.position, 1f);
-            }
-            PrintToChat("No _debris");
-        }
-
-
-        [ConsoleCommand("bradley.fire")]
-        private void cmdFire(ConsoleSystem.Arg conArgs)
-        {
-            BasePlayer player = conArgs?.Player();
-            if (!player.IsValid())
-                return;
-
-            if (_fireBalls.Count != 0)
-            {
-                PrintToChat("There're fire balls");
-                foreach (FireBall fireBall in _fireBalls)
-                {
-                    if (fireBall != null)
-                        fireBall.Extinguish();
-                }
-            }
-        }
-
-        #endregion Commands
     }
 }

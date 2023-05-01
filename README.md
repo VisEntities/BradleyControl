@@ -120,4 +120,4 @@ A portion of the contributions will also be donated to the uMod team as a token 
 
 ## Credits
 * Originally created by **Mattparks**, up to version 0.2.3
-* Completely rewritten from scratch and maintained to present by Dana.
+* Completely rewritten from scratch and maintained to present by **Dana**.

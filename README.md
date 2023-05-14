@@ -69,29 +69,31 @@ Determines the maximum torque applied to Bradley's wheels, affecting how fast it
 
 ### Spin Speed
 Determines how quickly Bradley can turn or spin.
+
 A higher value will result in faster spinning, making Bradley more agile and responsive. A lower value, however, will make it harder for Bradley to maneuver, making it an easier target for enemy fire.
 
 ### Brake Force
-Determines the strength of Bradley's brakes, which impacts its deceleration rate and stopping distance. 
+Determines the strength of Bradley's brakes, which impacts its deceleration rate and stopping distance.
+
 Higher values allow for faster deceleration and shorter stopping distances, helping Bradley stay on its path more accurately. However, this may also lead to slower movement. On the other hand, lower values result in slower deceleration, which could make Bradley slip off its path more often.
 
 ### Engagement Range
 Determines the range of visibility at which Bradley can interact with players and engage them with its weapons.
 
 ### Target Search Range
-Determines the radius around Bradley within which it can see and track potential targets.
-A higher value allows Bradley to track targets at a greater distance, while a lower value limits the detection and tracking range.
+Determines the radius around Bradley within which it can see and track potential targets. A higher value allows Bradley to track targets at a greater distance, while a lower value limits the detection and tracking range.
 
 ### Memory Duration
 Determines how long Bradley remembers a target after it has last seen them.
+
 A higher value makes Bradley remembers targets for a longer duration, even if they go out of sight. This is especially useful when engaging targets that use cover or attempt to hide from Bradley's line of sight. Contrariwise, a lower value causes Bradley to forget targets more quickly once they go out of sight, limiting its ability to engage them.
 
 ### Time Between Bursts
-Determines the time between each shot fired by the coaxial gun.
-A higher value will result in longer periods of time between shots, while a lower value will result in more rapid and aggressive firing.
+Determines the time between each shot fired by the coaxial gun. A higher value will result in longer periods of time between shots, while a lower value will result in more rapid and aggressive firing.
 
 ### Maximum Shots Per Burst
 Determines the maximum number of shots that can be fired in a single burst by the coaxial gun.
+
 A higher value allows for more shots to be fired in quick succession. On the contrary, a lower value means that fewer shots can be fired in a single burst. 
 
 ### Bullet Damage
@@ -99,6 +101,7 @@ Determines the base amount of damage that is dealt by each bullet fired from the
 
 ### Recoil Intensity
 Determines the amount of force applied to Bradley's body as a result of firing its cannon gun, simulating the recoil effect of the gun.
+
 A higher value means that Bradley will experience more significant movement and rotation when firing, while a lower value reduces the amount of recoil force.
 
 Note that too much recoil can impact Bradley's accuracy and stability, while too little can make it less effective in combat situations.

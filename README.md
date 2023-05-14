@@ -57,10 +57,9 @@ Determines whether or not fireballs will be created for each crate that spawns a
 
 
 ### Spread Chance
-Determines the probability of a fireball spreading and creating new ones.
-A higher value will increase the chance of the fireball spreading further, while a lower value will make the fireball less likely to spread.
+Determines the probability of a fireball spreading and creating new ones. A higher value will increase the chance of the fireball spreading further, while a lower value will make the fireball less likely to spread.
 
-Be mindful of the impact on server performance when making adjustments to this configuration.
+Be mindful of the impact on server performance when making adjustments to this setting.
 
 ### Spread At Lifetime Percent
 Determines at what point in the fireball's lifetime it'll begin to spread additional fireballs.

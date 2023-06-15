@@ -7,7 +7,7 @@ using Time = UnityEngine.Time;
 
 namespace Oxide.Plugins
 {
-    [Info("BradleyControl", "Dana", "1.0.0")]
+    [Info("BradleyControl", "Dana", "1.1.0")]
     [Description("Inject your armored beast with steroids and level it up with the intelligence and strength it deserves.")]
     public class BradleyControl : RustPlugin
     {

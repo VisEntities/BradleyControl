@@ -8,7 +8,7 @@ using Time = UnityEngine.Time;
 namespace Oxide.Plugins
 {
     [Info("BradleyControl", "Dana", "1.0.0")]
-    [Description(" ")]
+    [Description("Inject your armored beast with steroids and level it up with the intelligence and strength it deserves.")]
     public class BradleyControl : RustPlugin
     {
         #region Fields
@@ -16,17 +16,17 @@ namespace Oxide.Plugins
         private static BradleyControl _instance;
         private static Configuration _config;
 
-        private HashSet<FireBall> _fireBalls = new HashSet<FireBall>();
-        private HashSet<HelicopterDebris> _debris = new HashSet<HelicopterDebris>();
-        private HashSet<LockedByEntCrate> _crates = new HashSet<LockedByEntCrate>();
-
-        private Vector3 _lastBradleyPosition;
+        private HashSet<FireBall> _bradleyFireBalls = new HashSet<FireBall>();
+        private HashSet<HelicopterDebris> _bradleyDebris = new HashSet<HelicopterDebris>();
+        private HashSet<LockedByEntCrate> _bradleyCrates = new HashSet<LockedByEntCrate>();
         private HashSet<BradleyAPC> _spawnedBradleys = new HashSet<BradleyAPC>();
 
-        private const string _fireBallPrefab = "assets/bundled/prefabs/oilfireballsmall.prefab";
-        private const string _bradleyCratePrefab = "assets/prefabs/npc/m2bradley/bradley_crate.prefab";
-        private const string _bradleyDebrisPrefab = "assets/prefabs/npc/m2bradley/servergibs_bradley.prefab";
-        
+        private const string FIRE_BALL_PREFAB = "assets/bundled/prefabs/oilfireballsmall.prefab";
+        private const string BRADLEY_CRATE_PREFAB = "assets/prefabs/npc/m2bradley/bradley_crate.prefab";
+        private const string BRADLEY_DEBRIS_PREFAB = "assets/prefabs/npc/m2bradley/servergibs_bradley.prefab";
+
+        private Vector3 _lastCrashSitePosition;
+
         #endregion Fields
 
         #region Configuration
@@ -37,31 +37,31 @@ namespace Oxide.Plugins
             public string Version { get; set; }
 
             [JsonProperty("Health")]
-            public HealthOptions Health { get; set; }
+            public HealthSettings Health { get; set; }
 
             [JsonProperty("Loot")]
-            public LootOptions Loot { get; set; }
+            public LootSettings Loot { get; set; }
 
             [JsonProperty("Flame")]
-            public FlameOptions Flame { get; set; }
+            public FireBallSettings Flame { get; set; }
 
             [JsonProperty("Debris")]
-            public DebrisOptions Debris { get; set; }
+            public DebrisSettings Debris { get; set; }
 
             [JsonProperty("Movement")]
-            public MovementOptions Movement { get; set; }
+            public MovementSettings Movement { get; set; }
 
             [JsonProperty("Targeting")]
-            public TargetingOptions Targeting { get; set; }
+            public TargetingSettings Targeting { get; set; }
 
             [JsonProperty("Coax Turret")]
-            public CoaxTurretOptions CoaxTurret { get; set; }
+            public CoaxTurretSettings CoaxTurret { get; set; }
 
             [JsonProperty("Cannon")]
-            public CannonOptions Cannon { get; set; }
+            public CannonSettings Cannon { get; set; }
         }
 
-        private class HealthOptions
+        private class HealthSettings
         {
             [JsonProperty("Starting Health")]
             public float StartingHealth { get; set; }
@@ -70,13 +70,13 @@ namespace Oxide.Plugins
             public float MaximumHealth { get; set; }
         }
 
-        private class LootOptions
+        private class LootSettings
         {
             [JsonProperty("Maximum Crates To Drop")]
             public int MaximumCratesToDrop { get; set; }
         }
         
-        private class DebrisOptions
+        private class DebrisSettings
         {
             [JsonProperty("Drop On Destruction")]
             public bool DropOnDestruction { get; set; }
@@ -88,7 +88,7 @@ namespace Oxide.Plugins
             public float HarvestCooldown { get; set; }
         }
 
-        private class FlameOptions
+        private class FireBallSettings
         {
             [JsonProperty("Set Crates On Fire")]
             public bool SetCratesOnFire { get; set; }
@@ -115,7 +115,7 @@ namespace Oxide.Plugins
             public int WaterRequiredToExtinguish { get; set; }
         }
 
-        private class MovementOptions
+        private class MovementSettings
         {
             [JsonProperty("Maximum Speed")]
             public float MaximumSpeed { get; set; }
@@ -127,7 +127,7 @@ namespace Oxide.Plugins
             public float BrakeForce { get; set; }
         }
 
-        private class TargetingOptions
+        private class TargetingSettings
         {
             [JsonProperty("Engagement Range")]
             public float EngagementRange { get; set; }
@@ -139,7 +139,7 @@ namespace Oxide.Plugins
             public float MemoryDuration { get; set; }
         }
 
-        private class CoaxTurretOptions
+        private class CoaxTurretSettings
         {
             [JsonProperty("Time Between Bursts")]
             public float TimeBetweenBursts { get; set; }
@@ -151,7 +151,7 @@ namespace Oxide.Plugins
             public float BulletDamage { get; set; }
         }
 
-        private class CannonOptions
+        private class CannonSettings
         {
             [JsonProperty("Recoil Intensity")]
             public float RecoilIntensity { get; set; }
@@ -196,22 +196,22 @@ namespace Oxide.Plugins
             return new Configuration
             {
                 Version = Version.ToString(),
-                Health = new HealthOptions
+                Health = new HealthSettings
                 {
                     StartingHealth = 1000f,
                     MaximumHealth = 1000f
                 },
-                Loot = new LootOptions
+                Loot = new LootSettings
                 {
                     MaximumCratesToDrop = 3
                 },
-                Debris = new DebrisOptions
+                Debris = new DebrisSettings
                 {
                     DropOnDestruction = true,
                     HarvestableHitPoints = 500f,
                     HarvestCooldown = 480f
                 },
-                Flame = new FlameOptions
+                Flame = new FireBallSettings
                 {
                     SetCratesOnFire = true,
                     MinimumLifeTime = 20f,
@@ -222,25 +222,25 @@ namespace Oxide.Plugins
                     DamageRate = 0.5f,
                     WaterRequiredToExtinguish = 200,
                 },
-                Movement = new MovementOptions
+                Movement = new MovementSettings
                 {
                     MaximumSpeed = 2000f,
                     BrakeForce = 100f,
                     SpinSpeed = 2000f,
                 },
-                Targeting = new TargetingOptions
+                Targeting = new TargetingSettings
                 {
                     EngagementRange = 100f,
                     TargetSearchRange = 100f,
                     MemoryDuration = 20f,
                 },
-                CoaxTurret = new CoaxTurretOptions
+                CoaxTurret = new CoaxTurretSettings
                 {
                     TimeBetweenBursts = 0.06667f,
                     MaximumShotsPerBurst = 10,
                     BulletDamage = 15f,
                 },
-                Cannon = new CannonOptions
+                Cannon = new CannonSettings
                 {
                     RecoilIntensity = 200f,
                 }
@@ -284,11 +284,11 @@ namespace Oxide.Plugins
         
         private void OnEntityDeath(BradleyAPC bradley, HitInfo info)
         {
-            _lastBradleyPosition = bradley.transform.position;
+            _lastCrashSitePosition = bradley.transform.position;
 
             NextTick(() =>
             {
-                CaptureNearbyEntities(_lastBradleyPosition);
+                CaptureAfterExplosionEntities(_lastCrashSitePosition);
                 InitializeDebris();
                 InitializeCrates();
 
@@ -299,8 +299,8 @@ namespace Oxide.Plugins
         #endregion Oxide Hooks
 
         #region Functions
-
-        private void CaptureNearbyEntities(Vector3 position)
+        
+        private void CaptureAfterExplosionEntities(Vector3 position)
         {
             List<BaseEntity> nearbyEntities = Pool.GetList<BaseEntity>();
             Vis.Entities(position, 15f, nearbyEntities, LayerMask.GetMask("Ragdoll", "Default"), QueryTriggerInteraction.Ignore);
@@ -310,18 +310,18 @@ namespace Oxide.Plugins
                 foreach (BaseEntity capturedEntity in nearbyEntities)
                 {
                     LockedByEntCrate crate = capturedEntity as LockedByEntCrate;
-                    if (crate != null && crate.PrefabName == _bradleyCratePrefab)
+                    if (crate != null && crate.PrefabName == BRADLEY_CRATE_PREFAB)
                     {
-                        _crates.Add(crate);
+                        _bradleyCrates.Add(crate);
 
-                        FireBall fireBall = GetChildOfType<FireBall>(crate);
+                        FireBall fireBall = FindChildByType<FireBall>(crate);
                         if (fireBall != null)
                             fireBall.Extinguish();
                     }
 
                     HelicopterDebris debris = capturedEntity as HelicopterDebris;
-                    if (debris != null && debris.PrefabName == _bradleyDebrisPrefab)
-                        _debris.Add(debris);
+                    if (debris != null && debris.PrefabName == BRADLEY_DEBRIS_PREFAB)
+                        _bradleyDebris.Add(debris);
                 }
             }
 
@@ -352,13 +352,13 @@ namespace Oxide.Plugins
         {
             if (!_config.Debris.DropOnDestruction)
             {
-                foreach (HelicopterDebris debris in _debris)
+                foreach (HelicopterDebris debris in _bradleyDebris)
                     if (debris != null)
                         debris.Kill();
             }
             else
             {
-                foreach (HelicopterDebris debris in _debris)
+                foreach (HelicopterDebris debris in _bradleyDebris)
                 {
                     if (debris != null)
                     {
@@ -373,13 +373,13 @@ namespace Oxide.Plugins
         {
             if (_config.Flame.SetCratesOnFire)
             {
-                foreach (LockedByEntCrate crate in _crates)
+                foreach (LockedByEntCrate crate in _bradleyCrates)
                 {
                     if (crate != null)
                     {
                         FireBall fireBall = SpawnFireBall(crate);
                         InitializeFireBall(fireBall, crate);
-                        _fireBalls.Add(fireBall);
+                        _bradleyFireBalls.Add(fireBall);
                     }
                 }
             }
@@ -411,7 +411,7 @@ namespace Oxide.Plugins
 
         private FireBall SpawnFireBall(LockedByEntCrate crate)
         {
-            FireBall fireBall = GameManager.server.CreateEntity(_fireBallPrefab, crate.transform.position) as FireBall;
+            FireBall fireBall = GameManager.server.CreateEntity(FIRE_BALL_PREFAB, crate.transform.position) as FireBall;
             if (!fireBall)
                 return null;
 
@@ -423,16 +423,23 @@ namespace Oxide.Plugins
 
         #region Helper Functions
 
-        private static T GetChildOfType<T>(BaseEntity entity, string prefabName = null) where T : BaseEntity
+        private static T FindChildByType<T>(BaseEntity parentEntity, string prefabName = null) where T : BaseEntity
         {
-            foreach (var child in entity.children)
+            T result = null;
+            foreach (BaseEntity childEntity in parentEntity.children)
             {
-                var childOfType = child as T;
-                if (childOfType != null && (prefabName == null || child.PrefabName == prefabName))
-                    return childOfType;
+                T specificChild = childEntity as T;
+                if (specificChild != null)
+                {
+                    if (prefabName == null || childEntity.PrefabName == prefabName)
+                    {
+                        result = specificChild;
+                        break;
+                    }
+                }
             }
 
-            return null;
+            return result;
         }
 
         #endregion Helper Functions

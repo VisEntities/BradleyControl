@@ -402,6 +402,14 @@ namespace Oxide.Plugins
             fireBall.Think();
             crate.SendMessage("SetLockingEnt", fireBall.gameObject, SendMessageOptions.DontRequireReceiver);
 
+            Collider fireBallCollider = fireBall.GetComponent<Collider>();
+            foreach (HelicopterDebris debris in _bradleyDebris)
+            {
+                Collider debrisCollider = debris.GetCollider();
+                if (fireBallCollider != null && debrisCollider != null)
+                    Physics.IgnoreCollision(fireBallCollider, debrisCollider, true);
+            }
+
             float lifeTime = Random.Range(fireBall.lifeTimeMax, fireBall.lifeTimeMin);
             fireBall.Invoke(() => fireBall.Extinguish(), lifeTime);
 

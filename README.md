@@ -1,10 +1,3 @@
-# From bland to badass!
-Sick of the same old Bradley routine? Inject this armored beast with some steroids and level it up with the intelligence and strength it deserves! No more weaknesses to be exploited or predictable patterns to memorize. It's time to watch Bradley take revenge on all those who thought they had it all figured out.
-
-![](https://i.imgur.com/Jvxewu8.png)
-
---------
-
 ## Configuration
 ```json
 {
@@ -108,18 +101,6 @@ Note that too much recoil can impact Bradley's accuracy and stability, while too
 
 ------------
 
-## Keep the mod alive
-
-Creating plugins is my passion, and I love nothing more than exploring new ideas and bringing them to the community. But it takes hours of work every day to maintain and improve these plugins that you have come to love and rely on. 
-
-With your support on [Patreon](https://www.patreon.com/VisEntities), you're  giving me the freedom to devote more time and energy into what I love, which in turn allows me to continue providing new and exciting content to the community.
-
-![](https://i.imgur.com/qmv03TS.png)
-
-A portion of the contributions will also be donated to the uMod team as a token of appreciation for their dedication to coding quality, inspirational ideas, and time spent for the community.
-
--------
-
 ## Credits
+* Completely rewritten from scratch and maintained to present by **VisEntities**
 * Originally created by **Mattparks**, up to version 0.2.3
-* Completely rewritten from scratch and maintained to present by **Dana**.
